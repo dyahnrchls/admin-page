@@ -10,16 +10,25 @@ const User = () => {
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3">
-              Product name
+              Name
             </th>
             <th scope="col" className="px-6 py-3">
-              Color
+              Username
             </th>
             <th scope="col" className="px-6 py-3">
-              Category
+              Email
             </th>
             <th scope="col" className="px-6 py-3">
-              Price
+              Address
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Phone
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Website
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Company
             </th>
           </tr>
         </thead>
@@ -34,7 +43,10 @@ const User = () => {
                 </th>
                 <td className="px-6 py-4">{item.username}</td>
                 <td className="px-6 py-4">{item.email}</td>
+                <td className="px-6 py-4">{item.address.street}</td>
                 <td className="px-6 py-4">{item.phone}</td>
+                <td className="px-6 py-4">{item.website}</td>
+                <td className="px-6 py-4">{item.company.name}</td>
               </tr>
           ))}
         </tbody>
