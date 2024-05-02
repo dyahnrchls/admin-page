@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 
-const useGetPostList = (userId: string | undefined, queryKey: string) =>
+export const useGetPostList = (userId: string | undefined, queryKey: string) =>
   useQuery({
     queryKey: ["post", queryKey],
     queryFn: async () => {
@@ -14,19 +14,19 @@ const useGetPostList = (userId: string | undefined, queryKey: string) =>
     },
   });
 
-const useAddPost = () =>
+export const useAddPost = () =>
   useMutation({
     mutationFn: (payload) =>
       axios.post("https://jsonplaceholder.typicode.com/posts", payload),
   });
 
-const useUpdatePost = (id: number | undefined) =>
+export const useUpdatePost = (id: number | undefined) =>
   useMutation({
     mutationFn: (payload) =>
       axios.patch(`https://jsonplaceholder.typicode.com/posts/${id}`, payload),
   });
 
-const useDeletePost = (id: number | undefined) =>
+export const useDeletePost = (id: number | undefined) =>
   useMutation({
     mutationFn: () =>
       axios.delete(`https://jsonplaceholder.typicode.com/posts/${id}`),
@@ -91,5 +91,6 @@ export const usePostUtil = () => {
     onUpdate,
     setPostId,
     onDelete,
+    userId,
   };
 };

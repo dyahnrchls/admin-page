@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "src/@/components/ui/card";
-import { usePostUtil } from "./Post.util";
+import { useCommentUtil } from "./Comment.util";
 import { Button } from "src/@/components/ui/button";
 import {
   Dialog,
@@ -18,32 +18,41 @@ import {
 } from "src/@/components/ui/dialog";
 import { Input } from "src/@/components/ui/input";
 import { Label } from "src/@/components/ui/label";
-import { useLocation, useNavigate } from "react-router-dom";
 
-export const PostPage = () => {
+export const CommentPage = () => {
   const {
     data,
     setTitle,
     setBody,
     onCreate,
-    setPostId,
+    setCommentId,
     onUpdate,
     onDelete,
-    userId,
-  } = usePostUtil();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
+    post,
+  } = useCommentUtil();
 
   return (
     <div>
       <div className="mt-6 flex justify-center">
+        <div>
+          <h1 className="text-3xl font-bold mb-4">Post</h1>
+          <Card className="w-[50rem] cursor-pointer">
+            <CardHeader>
+              <CardTitle>{post?.title}</CardTitle>
+              <CardDescription>{post?.body}</CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      </div>
+
+      <div className="mt-6 flex justify-center">
         <Dialog>
           <DialogTrigger asChild>
-            <Button>Add Post</Button>
+            <Button>Add Comment</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Add Post</DialogTitle>
+              <DialogTitle>Add Comment</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
@@ -69,44 +78,32 @@ export const PostPage = () => {
             </div>
             <DialogFooter>
               <Button type="submit" onClick={onCreate}>
-                Add Post{" "}
+                Add Comment{" "}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
+
       <div className="flex justify-center my-6">
         <div className="flex flex-col gap-4">
+          <h1 className="text-3xl font-bold mb-4">Comments</h1>
           {data?.map(
             (item: {
               id: number;
               userId: number;
-              title: string;
+              email: string;
               body: string;
             }) => (
-              <Card
-                key={item?.id}
-                className="w-[50rem] cursor-pointer"
-                onClick={() =>
-                  navigate(
-                    `${pathname.replace(
-                      `posts/user/${userId}`,
-                      `comments/post/${item.id}`
-                    )}`,
-                    {
-                      state: { albumName: item.title },
-                    }
-                  )
-                }
-              >
+              <Card key={item?.id} className="w-[50rem] cursor-pointer">
                 <CardHeader>
-                  <CardTitle>{item?.title}</CardTitle>
+                  <CardTitle>{item?.email}</CardTitle>
                   <CardDescription>{item?.body}</CardDescription>
                   <div className="flex justify-end gap-4">
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button
-                          onClick={() => setPostId(item.id)}
+                          onClick={() => setCommentId(item.id)}
                           className="text-black bg-white border"
                         >
                           Edit
@@ -114,32 +111,13 @@ export const PostPage = () => {
                       </DialogTrigger>
                       <DialogContent className="sm:max-w-[425px]">
                         <DialogHeader>
-                          <DialogTitle>Edit Post</DialogTitle>
+                          <DialogTitle>Edit Comment</DialogTitle>
                         </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="name" className="text-right">
-                              Title
-                            </Label>
-                            <Input
-                              id="title"
-                              defaultValue={item.title}
-                              className="col-span-3"
-                              onChange={(e) => setTitle(e.target.value)}
-                            />
-                          </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="username" className="text-right">
-                              Body
-                            </Label>
-                            <Input
-                              id="body"
-                              defaultValue={item.body}
-                              className="col-span-3"
-                              onChange={(e) => setBody(e.target.value)}
-                            />
-                          </div>
-                        </div>
+                        <Input
+                          id="body"
+                          defaultValue={item.body}
+                          onChange={(e) => setBody(e.target.value)}
+                        />
                         <DialogFooter>
                           <Button type="submit" onClick={onUpdate}>
                             Save changes
@@ -151,7 +129,7 @@ export const PostPage = () => {
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button>
-                          <Button onClick={() => setPostId(item.id)}>
+                          <Button onClick={() => setCommentId(item.id)}>
                             Delete
                           </Button>
                         </Button>
@@ -159,15 +137,10 @@ export const PostPage = () => {
                       <DialogContent className="sm:max-w-[425px]">
                         <DialogHeader>
                           <DialogTitle>
-                            Are you sure want to delete this post?
+                            Are you sure want to delete this comment?
                           </DialogTitle>
 
-                          <DialogDescription>
-                            Title: {item.title}
-                          </DialogDescription>
-                          <DialogDescription>
-                            Body: {item.body}
-                          </DialogDescription>
+                          <DialogDescription>{item.body}</DialogDescription>
                         </DialogHeader>
 
                         <DialogFooter>

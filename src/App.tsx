@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PostPage } from "./pages/post/Post";
 import { AlbumPage } from "./pages/album/Album";
 import { PhotoPage } from "./pages/photo/Photo";
+import { CommentPage } from "./pages/comment/Comment";
 
 function App() {
   const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ function App() {
             <Route path="/posts/user/:userId" element={<PostPage />} />
             <Route path="/albums/user/:userId" element={<AlbumPage />} />
             <Route path="/albums/:albumId" element={<PhotoPage />} />
+            <Route path="/comments/post/:postId" element={<CommentPage />} />
           </Routes>
         </BrowserRouter>
       </QueryClientProvider>
