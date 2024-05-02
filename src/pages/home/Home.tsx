@@ -133,14 +133,16 @@ export const HomePage = () => {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem
-                  onClick={() =>
-                    navigate(`/posts/user/${row.original.id}`)
-                  }
+                  onClick={() => navigate(`/posts/user/${row.original.id}`)}
                 >
                   Posts
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Albums</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => navigate(`/albums/user/${row.original.id}`)}
+                >
+                  Albums
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           );

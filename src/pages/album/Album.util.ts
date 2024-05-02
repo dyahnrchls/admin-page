@@ -2,24 +2,25 @@ import axios from "axios";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 
-const useGetPostList = (userId: string | undefined) =>
+const useGetAlbumList = (userId: string | undefined) =>
   useQuery({
-    queryKey: ["post"],
+    queryKey: ["album"],
     queryFn: async () => {
       const { data } = await axios.get(
-        `https://jsonplaceholder.typicode.com/users/${userId}/posts`
+        `https://jsonplaceholder.typicode.com/users/${userId}/albums`
       );
       return data;
     },
   });
 
-export const usePostUtil = () => {
+export const useAlbumUtil = () => {
   const { userId } = useParams<{ userId: string }>();
 
-  const { status, data, error, isLoading } = useGetPostList(userId);
+  const { status, data, error, isLoading } = useGetAlbumList(userId);
 
   return {
     data,
     isLoading,
+    userId
   };
 };
