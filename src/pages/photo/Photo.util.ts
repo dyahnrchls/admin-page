@@ -17,7 +17,7 @@ export const usePhotoUtil = () => {
   const { albumId } = useParams<{ albumId: string }>();
   const { state } = useLocation();
 
-  const { status, data, error, isLoading } = useGetPhotoList(albumId);
+  const { data, isLoading } = useGetPhotoList(albumId);
 
   return {
     data,

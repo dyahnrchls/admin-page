@@ -8,7 +8,7 @@ export const commentQueryKey = {
   comments: () => ["comments"],
 };
 
-const useGetCommentList = (postId: string | undefined, queryKey: string) =>
+const useGetCommentList = (postId: string | undefined) =>
   useQuery({
     queryKey: commentQueryKey.comments(),
     queryFn: async () => {
@@ -84,9 +84,7 @@ export const useCommentUtil = () => {
   const [body, setBody] = useState<string>("");
   const [commentId, setCommentId] = useState<number>();
 
-  const [queryKey, setQueryKey] = useState<string>("");
-
-  const { data, isLoading } = useGetCommentList(postId, queryKey);
+  const { data, isLoading } = useGetCommentList(postId);
   const { data: post, isLoading: isLoadingPostById } = useGetPostById(postId);
 
   const addComment = useAddComment();

@@ -15,7 +15,7 @@ const useGetUserList = () => (
 
 export const useHomeUtil = (navigation: any) => {
 
-  const { status, data, error, isLoading } = useGetUserList()
+  const { data, isLoading } = useGetUserList()
 
   const handleNavigateToDetail = (id: string) => {
     navigation?.navigate("Detail", { id });
