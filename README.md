@@ -1,4 +1,4 @@
-# User Management System
+# Admin
 
 This project is a User Management System built with React, TypeScript, and Shadcn UI.
 
