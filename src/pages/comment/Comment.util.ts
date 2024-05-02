@@ -87,7 +87,7 @@ export const useCommentUtil = () => {
   const [queryKey, setQueryKey] = useState<string>("");
 
   const { data, isLoading } = useGetCommentList(postId, queryKey);
-  const { data: post } = useGetPostById(postId);
+  const { data: post, isLoading: isLoadingPostById } = useGetPostById(postId);
 
   const addComment = useAddComment();
   const updateComment = useUpdateComment(commentId);
@@ -150,5 +150,6 @@ export const useCommentUtil = () => {
     setCommentId,
     onDelete,
     post,
+    isLoadingPostById
   };
 };

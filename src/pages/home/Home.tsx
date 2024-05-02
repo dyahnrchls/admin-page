@@ -11,19 +11,15 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
-
-import { Checkbox } from "src/@/components/ui/checkbox";
+import { MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "src/@/components/ui/dropdown-menu";
-import { Input } from "src/@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -34,72 +30,8 @@ import {
 } from "src/@/components/ui/table";
 import { Button } from "src/@/components/ui/button";
 import { useHomeUtil } from "./Home.util";
-import { useNavigate, useNavigation } from "react-router-dom";
-
-const data: Payment[] = [
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
-];
-
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
-
-export const columns: ColumnDef<Payment>[] = [
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "username",
-    header: "Username",
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("username")}</div>
-    ),
-  },
-  {
-    accessorKey: "phone",
-    header: "Phone",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("phone")}</div>,
-  },
-];
+import { useNavigate } from "react-router-dom";
+import { Skeleton } from "src/@/components/ui/skeleton";
 
 export const HomePage = () => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -110,19 +42,59 @@ export const HomePage = () => {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const { users } = useHomeUtil(null);
+  const { users, isLoading } = useHomeUtil(null);
 
   const navigate = useNavigate();
 
-  const table = useReactTable({
-    data: users ?? [],
-    columns: [
-      ...columns,
+  const columns: ColumnDef<any>[] = React.useMemo(
+    () => [
+      {
+        accessorKey: "name",
+        header: "Name",
+        cell: ({ row }) =>
+          isLoading ? (
+            <Skeleton className="h-4 w-[250px]" />
+          ) : (
+            <div className="capitalize">{row.getValue("name")}</div>
+          ),
+      },
+      {
+        accessorKey: "email",
+        header: "Email",
+        cell: ({ row }) =>
+          isLoading ? (
+            <Skeleton className="h-4 w-[250px]" />
+          ) : (
+            <div className="lowercase">{row.getValue("email")}</div>
+          ),
+      },
+      {
+        accessorKey: "username",
+        header: "Username",
+        cell: ({ row }) =>
+          isLoading ? (
+            <Skeleton className="h-4 w-[250px]" />
+          ) : (
+            <div className="lowercase">{row.getValue("username")}</div>
+          ),
+      },
+      {
+        accessorKey: "phone",
+        header: "Phone",
+        cell: ({ row }) =>
+          isLoading ? (
+            <Skeleton className="h-4 w-[250px]" />
+          ) : (
+            <div className="lowercase">{row.getValue("phone")}</div>
+          ),
+      },
       {
         id: "actions",
         enableHiding: false,
-        cell: ({ row }) => {
-          return (
+        cell: ({ row }) =>
+          isLoading ? (
+            <Skeleton className="h-12 w-12 rounded-full" />
+          ) : (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
@@ -145,10 +117,15 @@ export const HomePage = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          );
-        },
+          ),
       },
     ],
+    [isLoading, navigate]
+  );
+
+  const table = useReactTable({
+    data: users ?? [],
+    columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),

@@ -16,11 +16,11 @@ const useGetAlbumList = (userId: string | undefined) =>
 export const useAlbumUtil = () => {
   const { userId } = useParams<{ userId: string }>();
 
-  const { status, data, error, isLoading } = useGetAlbumList(userId);
+  const { data, isLoading } = useGetAlbumList(userId);
 
   return {
     data,
     isLoading,
-    userId
+    userId,
   };
 };
