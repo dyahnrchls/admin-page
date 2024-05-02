@@ -1,11 +1,15 @@
 import axios from "axios";
 import { useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
 
-export const useGetPostList = (userId: string | undefined, queryKey: string) =>
+export const postQueryKey = {
+  posts: () => ["posts"],
+};
+
+export const useGetPostList = (userId: string | undefined) =>
   useQuery({
-    queryKey: ["post", queryKey],
+    queryKey: postQueryKey.posts(),
     queryFn: async () => {
       const { data } = await axios.get(
         `https://jsonplaceholder.typicode.com/users/${userId}/posts`
@@ -14,23 +18,47 @@ export const useGetPostList = (userId: string | undefined, queryKey: string) =>
     },
   });
 
-export const useAddPost = () =>
-  useMutation({
+export const useAddPost = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
     mutationFn: (payload) =>
       axios.post("https://jsonplaceholder.typicode.com/posts", payload),
+    onSuccess: () => {
+      return queryClient.invalidateQueries({
+        queryKey: postQueryKey.posts(),
+      });
+    },
   });
+};
 
-export const useUpdatePost = (id: number | undefined) =>
-  useMutation({
+export const useUpdatePost = (id: number | undefined) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
     mutationFn: (payload) =>
       axios.patch(`https://jsonplaceholder.typicode.com/posts/${id}`, payload),
+    onSuccess: () => {
+      return queryClient.invalidateQueries({
+        queryKey: postQueryKey.posts(),
+      });
+    },
   });
+};
 
-export const useDeletePost = (id: number | undefined) =>
-  useMutation({
+export const useDeletePost = (id: number | undefined) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
     mutationFn: () =>
       axios.delete(`https://jsonplaceholder.typicode.com/posts/${id}`),
+    onSuccess: () => {
+      return queryClient.invalidateQueries({
+        queryKey: ["posts"],
+      });
+    },
   });
+};
 
 export const usePostUtil = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -39,9 +67,7 @@ export const usePostUtil = () => {
   const [body, setBody] = useState<string>("");
   const [postId, setPostId] = useState<number>();
 
-  const [queryKey, setQueryKey] = useState<string>("");
-
-  const { data, isLoading } = useGetPostList(userId, queryKey);
+  const { data, isLoading } = useGetPostList(userId);
 
   const addPost = useAddPost();
   const updatePost = useUpdatePost(postId);
@@ -54,9 +80,7 @@ export const usePostUtil = () => {
       userId: Number(userId),
     };
 
-    addPost.mutate(payload as any, {
-      onSuccess: (resp) => setQueryKey(`newPost-${resp?.data?.id}`),
-    });
+    addPost.mutate(payload as any);
   };
 
   const onUpdate = () => {
@@ -67,17 +91,13 @@ export const usePostUtil = () => {
       userId: Number(userId),
     };
 
-    updatePost.mutate(payload as any, {
-      onSuccess: (resp) => setQueryKey(`updatePost-${resp?.data?.id}`),
-    });
+    updatePost.mutate(payload as any);
   };
 
   const onDelete = () => {
     const payload = {};
 
-    deletePost.mutate(payload as any, {
-      onSuccess: () => setQueryKey(`deletePost-${postId}`),
-    });
+    deletePost.mutate(payload as any);
   };
 
   return {

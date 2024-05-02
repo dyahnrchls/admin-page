@@ -1,11 +1,15 @@
 import axios from "axios";
 import { useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
+
+export const commentQueryKey = {
+  comments: () => ["comments"],
+};
 
 const useGetCommentList = (postId: string | undefined, queryKey: string) =>
   useQuery({
-    queryKey: ["comment", queryKey],
+    queryKey: commentQueryKey.comments(),
     queryFn: async () => {
       const { data } = await axios.get(
         `https://jsonplaceholder.typicode.com/posts/${postId}/comments`
@@ -25,23 +29,50 @@ const useGetPostById = (postId: string | undefined) =>
     },
   });
 
-const useAddComment = () =>
-  useMutation({
+const useAddComment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
     mutationFn: (payload) =>
       axios.post("https://jsonplaceholder.typicode.com/comments", payload),
+    onSuccess: () => {
+      return queryClient.invalidateQueries({
+        queryKey: commentQueryKey.comments(),
+      });
+    },
   });
+};
 
-const useUpdateComment = (id: number | undefined) =>
-  useMutation({
+const useUpdateComment = (id: number | undefined) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
     mutationFn: (payload) =>
-      axios.patch(`https://jsonplaceholder.typicode.com/comments/${id}`, payload),
+      axios.patch(
+        `https://jsonplaceholder.typicode.com/comments/${id}`,
+        payload
+      ),
+    onSuccess: () => {
+      return queryClient.invalidateQueries({
+        queryKey: commentQueryKey.comments(),
+      });
+    },
   });
+};
 
-const useDeleteComment = (id: number | undefined) =>
-  useMutation({
+const useDeleteComment = (id: number | undefined) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
     mutationFn: () =>
       axios.delete(`https://jsonplaceholder.typicode.com/comments/${id}`),
+    onSuccess: () => {
+      return queryClient.invalidateQueries({
+        queryKey: commentQueryKey.comments(),
+      });
+    },
   });
+};
 
 export const useCommentUtil = () => {
   const { userId, postId } = useParams<{ userId: string; postId: string }>();
@@ -103,6 +134,6 @@ export const useCommentUtil = () => {
     onUpdate,
     setCommentId,
     onDelete,
-    post
+    post,
   };
 };
