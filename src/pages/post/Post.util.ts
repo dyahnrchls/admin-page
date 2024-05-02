@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
+import { useToast } from "src/@/components/ui/use-toast";
 
 export const postQueryKey = {
   posts: () => ["posts"],
@@ -61,6 +62,8 @@ export const useDeletePost = (id: number | undefined) => {
 };
 
 export const usePostUtil = () => {
+  const { toast } = useToast();
+
   const { userId } = useParams<{ userId: string }>();
 
   const [title, setTitle] = useState<string>("");
@@ -80,7 +83,13 @@ export const usePostUtil = () => {
       userId: Number(userId),
     };
 
-    addPost.mutate(payload as any);
+    addPost.mutate(payload as any, {
+      onSuccess: () => {
+        toast({
+          title: "Post Created Successfully",
+        });
+      },
+    });
   };
 
   const onUpdate = () => {
@@ -91,13 +100,25 @@ export const usePostUtil = () => {
       userId: Number(userId),
     };
 
-    updatePost.mutate(payload as any);
+    updatePost.mutate(payload as any, {
+      onSuccess: () => {
+        toast({
+          title: "Post Updated Successfully",
+        });
+      },
+    });
   };
 
   const onDelete = () => {
     const payload = {};
 
-    deletePost.mutate(payload as any);
+    deletePost.mutate(payload as any, {
+      onSuccess: () => {
+        toast({
+          title: "Post Deleted Successfully",
+        });
+      },
+    });
   };
 
   return {

@@ -9,6 +9,7 @@ import { usePostUtil } from "./Post.util";
 import { Button } from "src/@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -19,6 +20,7 @@ import {
 import { Input } from "src/@/components/ui/input";
 import { Label } from "src/@/components/ui/label";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Toaster } from "src/@/components/ui/toaster";
 
 export const PostPage = () => {
   const {
@@ -44,11 +46,15 @@ export const PostPage = () => {
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Add Post</DialogTitle>
+              <DialogDescription>
+                If you edit/create/delete, it won't change the data on the
+                server because the REST API being used is only a mock.
+              </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">
-                  title
+                  Title
                 </Label>
                 <Input
                   id="title"
@@ -58,7 +64,7 @@ export const PostPage = () => {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
-                  body
+                  Body
                 </Label>
                 <Input
                   id="body"
@@ -68,15 +74,18 @@ export const PostPage = () => {
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit" onClick={onCreate}>
-                Add Post{" "}
-              </Button>
+              <DialogClose>
+                <Button type="submit" onClick={onCreate}>
+                  Add Post{" "}
+                </Button>
+              </DialogClose>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
       <div className="flex justify-center my-6">
         <div className="flex flex-col gap-4">
+          <h1 className="text-3xl font-bold mb-4">Post List</h1>
           {data?.map(
             (item: {
               id: number;
@@ -84,24 +93,24 @@ export const PostPage = () => {
               title: string;
               body: string;
             }) => (
-              <Card
-                key={item?.id}
-                className="w-[50rem] cursor-pointer"
-                onClick={() =>
-                  navigate(
-                    `${pathname.replace(
-                      `posts/user/${userId}`,
-                      `comments/post/${item.id}`
-                    )}`,
-                    {
-                      state: { albumName: item.title },
-                    }
-                  )
-                }
-              >
+              <Card key={item?.id} className="w-[50rem] cursor-pointer">
                 <CardHeader>
-                  <CardTitle>{item?.title}</CardTitle>
-                  <CardDescription>{item?.body}</CardDescription>
+                  <div
+                    onClick={() =>
+                      navigate(
+                        `${pathname.replace(
+                          `posts/user/${userId}`,
+                          `comments/post/${item.id}`
+                        )}`,
+                        {
+                          state: { albumName: item.title },
+                        }
+                      )
+                    }
+                  >
+                    <CardTitle>{item?.title}</CardTitle>
+                    <CardDescription>{item?.body}</CardDescription>
+                  </div>
                   <div className="flex justify-end gap-4">
                     <Dialog>
                       <DialogTrigger asChild>
@@ -115,6 +124,11 @@ export const PostPage = () => {
                       <DialogContent className="sm:max-w-[425px]">
                         <DialogHeader>
                           <DialogTitle>Edit Post</DialogTitle>
+                          <DialogDescription>
+                            If you edit/create/delete, it won't change the data
+                            on the server because the REST API being used is
+                            only a mock.
+                          </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                           <div className="grid grid-cols-4 items-center gap-4">
@@ -141,9 +155,11 @@ export const PostPage = () => {
                           </div>
                         </div>
                         <DialogFooter>
-                          <Button type="submit" onClick={onUpdate}>
-                            Save changes
-                          </Button>
+                          <DialogClose>
+                            <Button type="submit" onClick={onUpdate}>
+                              Save changes
+                            </Button>
+                          </DialogClose>
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
@@ -161,19 +177,19 @@ export const PostPage = () => {
                           <DialogTitle>
                             Are you sure want to delete this post?
                           </DialogTitle>
-
                           <DialogDescription>
-                            Title: {item.title}
-                          </DialogDescription>
-                          <DialogDescription>
-                            Body: {item.body}
+                            If you edit/create/delete, it won't change the data
+                            on the server because the REST API being used is
+                            only a mock.
                           </DialogDescription>
                         </DialogHeader>
 
                         <DialogFooter>
-                          <Button type="submit" onClick={onDelete}>
-                            Delete
-                          </Button>
+                          <DialogClose>
+                            <Button type="submit" onClick={onDelete}>
+                              Delete
+                            </Button>
+                          </DialogClose>
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
@@ -184,6 +200,7 @@ export const PostPage = () => {
           )}
         </div>
       </div>
+      <Toaster />
     </div>
   );
 };

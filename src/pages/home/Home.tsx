@@ -166,7 +166,8 @@ export const HomePage = () => {
   });
 
   return (
-    <div className="w-full">
+    <div className="w-full p-4">
+      <h1 className="text-3xl font-bold mb-4">User List</h1>
       <div className="rounded-md border">
         <Table>
           <TableHeader>

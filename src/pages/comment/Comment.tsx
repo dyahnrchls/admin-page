@@ -18,6 +18,7 @@ import {
 } from "src/@/components/ui/dialog";
 import { Input } from "src/@/components/ui/input";
 import { Label } from "src/@/components/ui/label";
+import { Toaster } from "src/@/components/ui/toaster";
 
 export const CommentPage = () => {
   const {
@@ -50,14 +51,16 @@ export const CommentPage = () => {
           <DialogTrigger asChild>
             <Button>Add Comment</Button>
           </DialogTrigger>
+
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Add Comment</DialogTitle>
             </DialogHeader>
+
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">
-                  title
+                  Email
                 </Label>
                 <Input
                   id="title"
@@ -67,7 +70,7 @@ export const CommentPage = () => {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
-                  body
+                  Comment
                 </Label>
                 <Input
                   id="body"
@@ -78,7 +81,7 @@ export const CommentPage = () => {
             </div>
             <DialogFooter>
               <Button type="submit" onClick={onCreate}>
-                Add Comment{" "}
+                Add
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -157,6 +160,8 @@ export const CommentPage = () => {
           )}
         </div>
       </div>
+
+      <Toaster />
     </div>
   );
 };

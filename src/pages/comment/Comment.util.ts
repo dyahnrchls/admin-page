@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
+import { useToast } from "src/@/components/ui/use-toast";
 
 export const commentQueryKey = {
   comments: () => ["comments"],
@@ -75,6 +76,8 @@ const useDeleteComment = (id: number | undefined) => {
 };
 
 export const useCommentUtil = () => {
+  const { toast } = useToast();
+
   const { userId, postId } = useParams<{ userId: string; postId: string }>();
 
   const [title, setTitle] = useState<string>("");
@@ -98,7 +101,11 @@ export const useCommentUtil = () => {
     };
 
     addComment.mutate(payload as any, {
-      onSuccess: (resp) => setQueryKey(`newComment-${resp?.data?.id}`),
+      onSuccess: () => {
+        toast({
+          title: "Comment Created Successfully",
+        });
+      },
     });
   };
 
@@ -111,7 +118,11 @@ export const useCommentUtil = () => {
     };
 
     updateComment.mutate(payload as any, {
-      onSuccess: (resp) => setQueryKey(`updateComment-${resp?.data?.id}`),
+      onSuccess: () => {
+        toast({
+          title: "Comment Updated Successfully",
+        });
+      },
     });
   };
 
@@ -119,7 +130,11 @@ export const useCommentUtil = () => {
     const payload = {};
 
     deleteComment.mutate(payload as any, {
-      onSuccess: () => setQueryKey(`deleteComment-${postId}`),
+      onSuccess: () => {
+        toast({
+          title: "Comment Deleted Successfully",
+        });
+      },
     });
   };
 
