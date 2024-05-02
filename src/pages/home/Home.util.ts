@@ -1,10 +1,21 @@
-import { useCallback, useEffect } from "react";
-import { fetchUserLists, userListSelector } from "../../store/slices";
-import { useAppDispatch, useAppSelector } from "../../store";
+import axios from 'axios'
+import { useQuery } from 'react-query';
+
+const useGetUserList = () => (
+  useQuery({
+   queryKey: ['users'],
+   queryFn: async () => {
+     const { data } = await axios.get(
+       'https://jsonplaceholder.typicode.com/users',
+     )
+     return data
+   },
+ })
+);
 
 export const useHomeUtil = (navigation: any) => {
-  const dispatch = useAppDispatch();
-  const users = useAppSelector(userListSelector);
+
+  const { status, data, error, isLoading } = useGetUserList()
 
   const handleNavigateToDetail = (id: string) => {
     navigation?.navigate("Detail", { id });
@@ -14,18 +25,11 @@ export const useHomeUtil = (navigation: any) => {
     navigation?.navigate("Add");
   };
 
-  const getUserList = useCallback(() => {
-    dispatch(fetchUserLists());
-  }, [dispatch]);
-
-  useEffect(() => {
-    getUserList();
-  }, [getUserList]);
 
   return {
     handleNavigateToDetail,
     handleNavigateToAdd,
-    users,
-    getUserList,
+    users: data,
+    isLoading
   };
 };
